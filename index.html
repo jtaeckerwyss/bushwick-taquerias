@@ -3,136 +3,40 @@
 
 <head>
     <meta charset="utf-8" />
-    <title>Bushwick Taquerias</title>
+    <title>Mapbox Test</title>
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <link href="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.css" rel="stylesheet" />
     <style>
-        body {
+        body,
+        html {
             margin: 0;
-            font-family: 'Courier New', monospace;
-            background: #252525;
-            color: #F0F0F0;
-        }
-
-        #title {
-            font-size: 24px;
-            font-weight: bold;
-            padding: 10px;
-        }
-
-        #sub-title {
-            font-size: 16px;
-            padding: 0 10px 10px;
+            padding: 0;
+            height: 100%;
         }
 
         #map {
             width: 100%;
             height: 100vh;
         }
-
-        .mapboxgl-popup-content {
-            background-color: #2f2f2f;
-            color: #F0F0F0;
-            font-family: 'Courier New', monospace;
-            font-size: 12px;
-            border-radius: 6px;
-            padding: 10px;
-        }
-
-        .popup-title {
-            font-size: 16px;
-            font-weight: bold;
-            color: #F4E2B0;
-            margin-bottom: 5px;
-        }
-
-        .popup-line {
-            line-height: 1.4;
-        }
     </style>
 </head>
 
 <body>
-    <header>
-        <div id="title">I frequent these Bushwick taquerias... and you should too</div>
-        <div id="sub-title">click to see more about them</div>
-    </header>
 
-    <main>
-        <div id="map"></div>
-    </main>
+    <div id="map"></div>
 
-    <!-- Scripts -->
     <script src="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.js"></script>
-    <script src="https://unpkg.com/csv2geojson@latest/csv2geojson.js"></script>
     <script>
-        const sheetmapperOptions = {
-            googleSheetDownloadUrl: 'https://docs.google.com/spreadsheets/d/1lA_cylBfmYk4OHfwpCUemGJPyvpOh-jfHIaB8Z4j8jw/export?format=csv&gid=0',
-            mapboxAccessToken: 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A',
-            markerOptions: {
-                color: '#F4E2B0',
-                scale: 0.8
-            }
-        };
+        mapboxgl.accessToken = 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A';
 
-        async function convertCsvToGeojson(csvData) {
-            return new Promise((resolve, reject) => {
-                csv2geojson.csv2geojson(csvData, {
-                    latfield: 'Latitude',
-                    lonfield: 'Longitude',
-                    delimiter: ','
-                }, (error, data) => {
-                    if (error) reject(error);
-                    else resolve(data);
-                });
-            });
-        }
-
-        const { markerOptions, googleSheetDownloadUrl, mapboxAccessToken } = sheetmapperOptions;
-        mapboxgl.accessToken = mapboxAccessToken;
-
-        document.addEventListener("DOMContentLoaded", async () => {
-            try {
-                const response = await fetch(googleSheetDownloadUrl);
-                if (!response.ok) throw new Error("Error loading Google Sheet data.");
-                const csvData = await response.text();
-
-                if (!csvData || csvData.trim().length === 0) {
-                    console.warn("CSV is empty. Check sharing settings.");
-                    return;
-                }
-
-                const geojsonData = await convertCsvToGeojson(csvData);
-
-                const map = new mapboxgl.Map({
-                    container: 'map',
-                    style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha',
-                    center: [-73.9313, 40.7014],
-                    zoom: 14
-                });
-
-                map.on('load', () => {
-                    geojsonData.features.forEach((d) => {
-                        const name = d.properties.Name;
-                        const popupContent = `
-              <div class="popup-title">${name}</div>
-              <div class="popup-line"><strong>Address:</strong> ${d.properties.Address}</div>
-              <div class="popup-line"><strong>Description:</strong> ${d.properties.Description}</div>
-              <div class="popup-line"><strong>What I order:</strong> ${d.properties.Order || ""}</div>
-            `;
-
-                        new mapboxgl.Marker(markerOptions)
-                            .setLngLat(d.geometry.coordinates)
-                            .setPopup(new mapboxgl.Popup().setHTML(popupContent))
-                            .addTo(map);
-                    });
-                });
-
-            } catch (err) {
-                console.error("Map failed to load:", err);
-            }
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v11',
+            center: [-73.9313, 40.7014],
+            zoom: 14
         });
     </script>
+
 </body>
 
 </html>
