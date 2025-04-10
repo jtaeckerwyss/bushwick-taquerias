@@ -1,42 +1,24 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
-    <meta charset="utf-8" />
-    <title>Mapbox Test</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <link href="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.css" rel="stylesheet" />
-    <style>
-        body,
-        html {
-            margin: 0;
-            padding: 0;
-            height: 100%;
-        }
-
-        #map {
-            width: 100%;
-            height: 100vh;
-        }
-    </style>
+  <meta charset="utf-8" />
+  <title>Bushwick Taquerias</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link href="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.css" rel="stylesheet" />
+  <link href="styles.css" rel="stylesheet" /> <!-- If you have CSS in a file -->
 </head>
-
 <body>
 
-    <div id="map"></div>
+  <div id="title">I frequent these Bushwick taquerias... and you should too</div>
+  <div id="sub-title">Click to see more about them</div>
+  <div id="map"></div>
 
-    <script src="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.js"></script>
-    <script>
-        mapboxgl.accessToken = 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A';
+  <!-- Mapbox and dependencies -->
+  <script src="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.js"></script>
+  <script src="https://unpkg.com/csv2geojson@latest/csv2geojson.js"></script>
 
-        const map = new mapboxgl.Map({
-            container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11',
-            center: [-73.9313, 40.7014],
-            zoom: 14
-        });
-    </script>
+  <!-- Your script that sets access token, loads map, and adds data -->
+  <script src="scripts.js"></script>
 
 </body>
-
 </html>
