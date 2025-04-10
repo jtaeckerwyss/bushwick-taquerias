@@ -5,7 +5,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     const sheetmapperOptions = {
-        googleSheetDownloadUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-tcG8aewG0If-3-iz0euHyBW90SGGZ3degMqgSi-OrqpXlg5QL240_Joa8iCqc0iiqiEX5ZIHlCVn/pubhtml',
+        googleSheetDownloadUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-tcG8aewG0If-3-iz0euHyBW90SGGZ3degMqgSi-OrqpXlg5QL240_Joa8iCqc0iiqiEX5ZIHlCVn/pub?output=csv',
         mapboxAccessToken: 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A',
         markerOptions: {
             color: '#F4E2B0',
