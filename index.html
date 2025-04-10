@@ -1,24 +1,30 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="utf-8" />
-  <title>Bushwick Taquerias</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link href="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.css" rel="stylesheet" />
-  <link href="styles.css" rel="stylesheet" /> <!-- If you have CSS in a file -->
+    <meta charset="utf-8" />
+    <title>Bushwick Taquerias</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.css" rel="stylesheet" />
+    <link href="styles.css" rel="stylesheet" /> <!-- If you have CSS in a file -->
 </head>
+
 <body>
 
-  <div id="title">I frequent these Bushwick taquerias... and you should too</div>
-  <div id="sub-title">Click to see more about them</div>
-  <div id="map"></div>
+    <div id="title">I frequent these Bushwick taquerias... and you should too</div>
+    <div id="sub-title">Click to see more about them</div>
+    <div id="map"></div>
 
-  <!-- Mapbox and dependencies -->
-  <script src="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.js"></script>
-  <script src="https://unpkg.com/csv2geojson@latest/csv2geojson.js"></script>
+    <!-- First load Mapbox -->
+    <script src="https://api.mapbox.com/mapbox-gl-js/v2.16.1/mapbox-gl.js"></script>
 
-  <!-- Your script that sets access token, loads map, and adds data -->
-  <script src="scripts.js"></script>
+    <!-- Second load csv2geojson (if needed) -->
+    <script src="https://unpkg.com/csv2geojson@latest/csv2geojson.js"></script>
+
+    <!-- Third my own script -->
+    <script src="scripts.js"></script>
+
 
 </body>
+
 </html>
