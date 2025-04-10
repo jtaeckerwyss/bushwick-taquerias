@@ -47,16 +47,15 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha', // Bushwick Taqueria Mapbox Style
-            center: [-73.9313, 40.7014],  // Center Bushwick
-            zoom: 14,  // Default zoom level
+            style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha',
+            center: [-73.9313, 40.7014],
+            zoom: 14,
         });
 
         map.on('load', function () {
             geojsonData.features.forEach((d) => {
                 const name = d.properties.Name;
 
-                // Styled popup content
                 const popupContent = `
                     <div class="popup-content">
                         <div class="popup-title">${name}</div>
@@ -66,10 +65,13 @@ document.addEventListener("DOMContentLoaded", async () => {
                     </div>
                 `;
 
-                // Create the marker and attach the popup
-                const marker = new mapboxgl.Marker(markerOptions)
+                new mapboxgl.Marker(markerOptions)
                     .setLngLat(d.geometry.coordinates)
                     .setPopup(new mapboxgl.Popup().setHTML(popupContent))
                     .addTo(map);
             });
         });
+    } catch (error) {
+        console.error("Map failed to load:", error);
+    }
+});
