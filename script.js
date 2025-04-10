@@ -47,7 +47,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         const map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v11', // Bushwick Taqueria Mapbox Style
+            style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha', // Bushwick Taqueria Mapbox Style
             center: [-73.9313, 40.7014],  // Center Bushwick
             zoom: 14,  // Default zoom level
         });
