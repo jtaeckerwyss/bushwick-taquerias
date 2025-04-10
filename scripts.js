@@ -1,40 +1,42 @@
-// Config
-const sheetmapperOptions = {
-    googleSheetDownloadUrl: 'https://docs.google.com/spreadsheets/d/1lA_cylBfmYk4OHfwpCUemGJPyvpOh-jfHIaB8Z4j8jw/export?format=csv&gid=0',
-    mapboxAccessToken: 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A',
-    markerOptions: {
-        color: '#F4E2B0',
-        scale: 0.8
-    }
-};
-
-mapboxgl.accessToken = sheetmapperOptions.mapboxAccessToken;
-
-// CSV to GeoJSON conversion
-async function convertCsvToGeojson(csvData) {
-    return new Promise((resolve, reject) => {
-        csv2geojson.csv2geojson(csvData, {
-            latfield: 'Latitude',
-            lonfield: 'Longitude',
-            delimiter: ','
-        }, (error, data) => {
-            if (error) reject(error);
-            else resolve(data);
-        });
-    });
-}
-
-// Main logic
 document.addEventListener("DOMContentLoaded", async () => {
+    if (typeof mapboxgl === "undefined") {
+        console.error("Mapbox GL JS is not loaded.");
+        return;
+    }
+
+    const sheetmapperOptions = {
+        googleSheetDownloadUrl: 'https://docs.google.com/spreadsheets/d/1lA_cylBfmYk4OHfwpCUemGJPyvpOh-jfHIaB8Z4j8jw/export?format=csv&gid=0',
+        mapboxAccessToken: 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A',
+        markerOptions: {
+            color: '#F4E2B0',
+            scale: 0.8
+        }
+    };
+
+    mapboxgl.accessToken = sheetmapperOptions.mapboxAccessToken;
+
+    async function convertCsvToGeojson(csvData) {
+        return new Promise((resolve, reject) => {
+            csv2geojson.csv2geojson(csvData, {
+                latfield: 'Latitude',
+                lonfield: 'Longitude',
+                delimiter: ','
+            }, (error, data) => {
+                if (error) reject(error);
+                else resolve(data);
+            });
+        });
+    }
+
     try {
         const response = await fetch(sheetmapperOptions.googleSheetDownloadUrl);
         if (!response.ok) {
-            throw new Error("Error loading Google Sheet data. Make sure it's shared and published.");
+            throw new Error("Failed to load Google Sheet.");
         }
 
         const csvData = await response.text();
         if (!csvData || csvData.trim().length === 0) {
-            console.warn("CSV is empty. Check sharing settings.");
+            console.warn("CSV is empty.");
             return;
         }
 
@@ -65,7 +67,7 @@ document.addEventListener("DOMContentLoaded", async () => {
             });
         });
 
-    } catch (error) {
-        console.error("Map failed to load:", error);
+    } catch (err) {
+        console.error("Error loading map or data:", err);
     }
 });
