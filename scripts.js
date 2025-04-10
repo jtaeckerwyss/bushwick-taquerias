@@ -41,6 +41,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         }
 
         const geojsonData = await convertCsvToGeojson(csvData);
+        console.log("✅ GeoJSON loaded:", geojsonData);
 
         const map = new mapboxgl.Map({
             container: 'map',
@@ -50,7 +51,14 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         map.on('load', () => {
-            geojsonData.features.forEach((d) => {
+            geojsonData.features.forEach((d, i) => {
+                const coords = d.geometry?.coordinates;
+
+                if (!coords || coords.length !== 2) {
+                    console.warn(`⚠️ Skipping feature at index ${i} — invalid coordinates:`, coords);
+                    return;
+                }
+
                 const popupContent = `
                     <div class="popup-content">
                         <div class="popup-title">${d.properties.Name}</div>
@@ -61,13 +69,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `;
 
                 new mapboxgl.Marker(sheetmapperOptions.markerOptions)
-                    .setLngLat(d.geometry.coordinates)
+                    .setLngLat(coords)
                     .setPopup(new mapboxgl.Popup().setHTML(popupContent))
                     .addTo(map);
+
+                console.log("📍 Added marker:", d.properties.Name, coords);
             });
         });
 
     } catch (err) {
-        console.error("Error loading map or data:", err);
+        console.error("❌ Error loading map or data:", err);
     }
 });
