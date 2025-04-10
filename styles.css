@@ -1,0 +1,65 @@
+body {
+    font-family: 'Courier New', monospace;
+    background-color: #252525;
+    color: #F0F0F0;
+    font-size: 12px;
+    padding: 10px;
+    max-width: 960px;
+    margin: 0 auto;
+}
+
+/* title */
+
+#title {
+    font-weight: bold;
+    font-size: 30px;
+    margin-bottom: 5px;
+}
+
+/* subtitle */
+
+#sub-title {
+    font-size: 20px;
+    margin-bottom: 15px;
+}
+
+/* map container */
+
+#map {
+    width: 100%;
+    height: 60vh; /* proportional fill */
+    min-height: 400px;
+    border: 2px solid #5d4400;
+    border-radius: 6px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.4);
+    margin-bottom: 20px;
+}
+
+
+/* popups */
+.mapboxgl-popup-content {
+    background-color: #2f2f2f;
+    color: #F0F0F0;
+    font-family: 'Courier New', monospace;
+    font-size: 12px;
+    border-radius: 6px;
+    padding: 10px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.5);
+}
+
+.popup-content {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.popup-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #F4E2B0;
+    margin-bottom: 5px;
+}
+
+.popup-line {
+    line-height: 1.4;
+}
