@@ -52,6 +52,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         map.on('load', () => {
             geojsonData.features.forEach((d, i) => {
+                console.log("📍 Marker data:", d.properties.Name, d.geometry?.coordinates);
                 const coords = d.geometry?.coordinates;
 
                 if (!coords || coords.length !== 2) {
