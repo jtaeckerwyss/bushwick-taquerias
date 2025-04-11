@@ -54,6 +54,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         map.on('load', () => {
+            new mapboxgl.Marker({ color: "#FF0000" })
+                .setLngLat([-73.922222, 40.7030402])  // Taqueria Al Pastor
+                .setPopup(new mapboxgl.Popup().setHTML("<h4>Taqueria Al Pastor</h4>"))
+                .addTo(map);
+
             geojsonData.features.forEach((d, i) => {
                 console.log("Marker data:", d.properties.Name, d.geometry?.coordinates);
                 const coords = d.geometry?.coordinates;
@@ -73,12 +78,12 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `;
 
                 new mapboxgl.Marker(sheetmapperOptions.markerOptions)
-                .setLngLat(coords)
-                .setPopup(new mapboxgl.Popup().setHTML(popupContent))
-                .addTo(map)
-                .togglePopup();
+                    .setLngLat(coords)
+                    .setPopup(new mapboxgl.Popup().setHTML(popupContent))
+                    .addTo(map)
+                    .togglePopup();
 
-                console.log("📍 Added marker:", d.properties.Name, coords);
+                console.log("Added marker:", d.properties.Name, coords);
             });
         });
 
