@@ -22,8 +22,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                 lonfield: 'Longitude',
                 delimiter: ','
             }, (error, data) => {
-                if (error) reject(error);
-                else resolve(data);
+                if (error) {
+                    reject(error);
+                } else {
+                    resolve(data);
+                }
             });
         });
     }
@@ -52,7 +55,7 @@ document.addEventListener("DOMContentLoaded", async () => {
 
         map.on('load', () => {
             geojsonData.features.forEach((d, i) => {
-                console.log("📍 Marker data:", d.properties.Name, d.geometry?.coordinates);
+                console.log("Marker data:", d.properties.Name, d.geometry?.coordinates);
                 const coords = d.geometry?.coordinates;
 
                 if (!coords || coords.length !== 2) {
@@ -70,15 +73,16 @@ document.addEventListener("DOMContentLoaded", async () => {
                 `;
 
                 new mapboxgl.Marker(sheetmapperOptions.markerOptions)
-                    .setLngLat(coords)
-                    .setPopup(new mapboxgl.Popup().setHTML(popupContent))
-                    .addTo(map);
+                .setLngLat(coords)
+                .setPopup(new mapboxgl.Popup().setHTML(popupContent))
+                .addTo(map)
+                .togglePopup();
 
                 console.log("📍 Added marker:", d.properties.Name, coords);
             });
         });
 
     } catch (err) {
-        console.error("❌ Error loading map or data:", err);
+        console.error("Error loading map or data:", err);
     }
 });
