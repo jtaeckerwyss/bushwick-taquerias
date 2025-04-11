@@ -46,6 +46,19 @@ document.addEventListener("DOMContentLoaded", async () => {
         const geojsonData = await convertCsvToGeojson(csvData);
         console.log("✅ GeoJSON loaded:", geojsonData);
 
+        // 🔄 Flip coordinates if they're in the wrong order
+        geojsonData.features.forEach((feature, i) => {
+            const coords = feature.geometry?.coordinates;
+            if (coords && coords.length === 2) {
+                const [lon, lat] = coords;
+                // If they appear flipped (e.g., lat is negative or lon is positive), fix them
+                if (lat < -60 || lon > 0) {
+                    console.warn(`⚠️ Flipping coordinates for feature ${i}:`, coords);
+                    feature.geometry.coordinates = [lat, lon];
+                }
+            }
+        });
+
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha',
@@ -54,13 +67,15 @@ document.addEventListener("DOMContentLoaded", async () => {
         });
 
         map.on('load', () => {
+            // Test marker
             new mapboxgl.Marker({ color: "#FF0000" })
-                .setLngLat([-73.922222, 40.7030402])  // Taqueria Al Pastor
+                .setLngLat([-73.922222, 40.7030402])
                 .setPopup(new mapboxgl.Popup().setHTML("<h4>Taqueria Al Pastor</h4>"))
                 .addTo(map);
 
+            // Real markers from CSV
             geojsonData.features.forEach((d, i) => {
-                console.log("Marker data:", d.properties.Name, d.geometry?.coordinates);
+                console.log("📍 Marker data:", d.properties.Name, d.geometry?.coordinates);
                 const coords = d.geometry?.coordinates;
 
                 if (!coords || coords.length !== 2) {
@@ -83,11 +98,11 @@ document.addEventListener("DOMContentLoaded", async () => {
                     .addTo(map)
                     .togglePopup();
 
-                console.log("Added marker:", d.properties.Name, coords);
+                console.log("✅ Added marker:", d.properties.Name, coords);
             });
         });
 
     } catch (err) {
-        console.error("Error loading map or data:", err);
+        console.error("❌ Error loading map or data:", err);
     }
 });
