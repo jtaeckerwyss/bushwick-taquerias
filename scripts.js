@@ -75,8 +75,7 @@ document.addEventListener("DOMContentLoaded", async () => {
                 console.log("Added marker:", d.properties.Name, coords);
                 console.log("✅ Added marker:", d.properties.Name, coords);
             });
-        });
-
+            
     } catch (err) {
         console.error("Error loading map or data:", err);
         console.error("❌ Error loading map or data:", err);
