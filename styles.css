@@ -45,21 +45,16 @@ body {
     border-radius: 6px;
     padding: 10px;
     box-shadow: 0 0 10px rgba(0,0,0,0.5);
-}
-
-.popup-content {
-    display: flex;
-    flex-direction: column;
-    gap: 4px;
-}
-
-.popup-title {
+    max-width: 250px;
+  }
+  
+  .popup-title {
     font-size: 16px;
     font-weight: bold;
     color: #F4E2B0;
     margin-bottom: 5px;
-}
-
-.popup-line {
+  }
+  
+  .popup-line {
     line-height: 1.4;
-}
+  }
