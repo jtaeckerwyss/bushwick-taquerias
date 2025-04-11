@@ -4,105 +4,85 @@ document.addEventListener("DOMContentLoaded", async () => {
         return;
     }
 
-    const sheetmapperOptions = {
-        googleSheetDownloadUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-tcG8aewG0If-3-iz0euHyBW90SGGZ3degMqgSi-OrqpXlg5QL240_Joa8iCqc0iiqiEX5ZIHlCVn/pub?output=csv',
-        mapboxAccessToken: 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A',
-        markerOptions: {
+    const config = {
+        csvUrl: 'https://docs.google.com/spreadsheets/d/e/2PACX-1vS-tcG8aewG0If-3-iz0euHyBW90SGGZ3degMqgSi-OrqpXlg5QL240_Joa8iCqc0iiqiEX5ZIHlCVn/pub?output=csv',
+        mapboxToken: 'pk.eyJ1IjoianRhZWNrZXJ3eXNzIiwiYSI6ImNtOWJoZm10NTBnZWEyam92azlnZXRzaXgifQ.u74wiCeZdSxg6ajQ0-cR0A',
+        marker: {
             color: '#F4E2B0',
             scale: 0.8
-        }
+        },
+        center: [-73.9313, 40.7014],
+        zoom: 14,
+        mapStyle: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha',
     };
 
-    mapboxgl.accessToken = sheetmapperOptions.mapboxAccessToken;
+    mapboxgl.accessToken = config.mapboxToken;
 
-    async function convertCsvToGeojson(csvData) {
+    async function fetchCsv(url) {
+        const response = await fetch(url);
+        if (!response.ok) throw new Error("Failed to load CSV data.");
+        const text = await response.text();
+        if (!text || text.trim().length === 0) throw new Error("CSV is empty.");
+        return text;
+    }
+
+    function csvToGeoJson(csv) {
         return new Promise((resolve, reject) => {
-            csv2geojson.csv2geojson(csvData, {
+            csv2geojson.csv2geojson(csv, {
                 latfield: 'Latitude',
                 lonfield: 'Longitude',
-                delimiter: ','
+                delimiter: ',',
             }, (error, data) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(data);
-                }
+                if (error) reject(error);
+                else resolve(data);
             });
         });
     }
 
+    function createPopupHTML(props) {
+        return `
+        <div class="popup-content">
+          <div class="popup-title">${props.Name}</div>
+          <div class="popup-line"><strong>Address:</strong> ${props.Address}</div>
+          <div class="popup-line"><strong>Description:</strong> ${props.Description}</div>
+          <div class="popup-line"><strong>What I order:</strong> ${props.Order || ""}</div>
+        </div>
+      `;
+    }
+
     try {
-        const response = await fetch(sheetmapperOptions.googleSheetDownloadUrl);
-        if (!response.ok) {
-            throw new Error("Failed to load Google Sheet.");
-        }
-
-        const csvData = await response.text();
-        if (!csvData || csvData.trim().length === 0) {
-            console.warn("CSV is empty.");
-            return;
-        }
-
-        const geojsonData = await convertCsvToGeojson(csvData);
-        console.log("✅ GeoJSON loaded:", geojsonData);
-
-        // 🔄 Flip coordinates if they're in the wrong order
-        geojsonData.features.forEach((feature, i) => {
-            const coords = feature.geometry?.coordinates;
-            if (coords && coords.length === 2) {
-                const [lon, lat] = coords;
-                // If they appear flipped (e.g., lat is negative or lon is positive), fix them
-                if (lat < -60 || lon > 0) {
-                    console.warn(`⚠️ Flipping coordinates for feature ${i}:`, coords);
-                    feature.geometry.coordinates = [lat, lon];
-                }
-            }
-        });
+        const csvData = await fetchCsv(config.csvUrl);
+        const geojson = await csvToGeoJson(csvData);
+        console.log("✅ GeoJSON loaded:", geojson);
 
         const map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha',
-            center: [-73.9313, 40.7014],
-            zoom: 14
+            style: config.mapStyle,
+            center: config.center,
+            zoom: config.zoom,
         });
 
         map.on('load', () => {
-            // Test marker
-            new mapboxgl.Marker({ color: "#FF0000" })
-                .setLngLat([-73.922222, 40.7030402])
-                .setPopup(new mapboxgl.Popup().setHTML("<h4>Taqueria Al Pastor</h4>"))
-                .addTo(map);
-
-            // Real markers from CSV
-            geojsonData.features.forEach((d, i) => {
-                console.log("📍 Marker data:", d.properties.Name, d.geometry?.coordinates);
-                const coords = d.geometry?.coordinates;
-
+            geojson.features.forEach((feature, i) => {
+                const coords = feature.geometry?.coordinates;
                 if (!coords || coords.length !== 2) {
-                    console.warn(`⚠️ Skipping feature at index ${i} — invalid coordinates:`, coords);
+                    console.warn(`⚠️ Skipping invalid coordinates at feature ${i}:`, coords);
                     return;
                 }
 
-                const popupContent = `
-                    <div class="popup-content">
-                        <div class="popup-title">${d.properties.Name}</div>
-                        <div class="popup-line"><strong>Address:</strong> ${d.properties.Address}</div>
-                        <div class="popup-line"><strong>Description:</strong> ${d.properties.Description}</div>
-                        <div class="popup-line"><strong>What I order:</strong> ${d.properties.Order || ""}</div>
-                    </div>
-                `;
+                const popup = new mapboxgl.Popup().setHTML(createPopupHTML(feature.properties));
 
-                new mapboxgl.Marker(sheetmapperOptions.markerOptions)
+                new mapboxgl.Marker(config.marker)
                     .setLngLat(coords)
-                    .setPopup(new mapboxgl.Popup().setHTML(popupContent))
+                    .setPopup(popup)
                     .addTo(map)
                     .togglePopup();
 
-                console.log("✅ Added marker:", d.properties.Name, coords);
+                console.log(`📍 Added marker: ${feature.properties.Name}`, coords);
             });
         });
 
     } catch (err) {
-        console.error("❌ Error loading map or data:", err);
+        console.error("❌ Error initializing map:", err);
     }
 });
