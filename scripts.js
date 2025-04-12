@@ -32,14 +32,17 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
-        
+
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha', // Night-time taco style
             center: [-73.918, 40.7], // center over Bushwick 
             zoom: 14
         });
-        
+
+        // Disable panning
+        map.dragPan.disable();
+
         const response = await fetch(sheetmapperOptions.googleSheetDownloadUrl);
         if (!response.ok) {
             throw new Error("Failed to load Google Sheet.");
@@ -54,18 +57,18 @@ document.addEventListener("DOMContentLoaded", async () => {
         const geojsonData = await convertCsvToGeojson(csvData);
         console.log("✅ GeoJSON loaded:", geojsonData);
 
-            // Real markers from CSV
-            geojsonData.features.forEach((d, i) => {
-                console.log("Marker data:", d.properties.Name, d.geometry?.coordinates);
-                console.log("📍 Marker data:", d.properties.Name, d.geometry?.coordinates);
-                const coords = d.geometry?.coordinates;
+        // Real markers from CSV
+        geojsonData.features.forEach((d, i) => {
+            console.log("Marker data:", d.properties.Name, d.geometry?.coordinates);
+            console.log("📍 Marker data:", d.properties.Name, d.geometry?.coordinates);
+            const coords = d.geometry?.coordinates;
 
-                if (!coords || coords.length !== 2) {
-                    console.warn(`⚠️ Skipping feature at index ${i} — invalid coordinates:`, coords);
-                    return;
-                }
+            if (!coords || coords.length !== 2) {
+                console.warn(`⚠️ Skipping feature at index ${i} — invalid coordinates:`, coords);
+                return;
+            }
 
-                const popupContent = `
+            const popupContent = `
                        <div class="popup-content">
                            <div class="popup-title">${d.properties.Name}</div>
                            <div class="popup-line"><strong>Address:</strong> ${d.properties.Address}</div>
@@ -74,15 +77,15 @@ document.addEventListener("DOMContentLoaded", async () => {
                        </div>
                    `;
 
-                new mapboxgl.Marker(sheetmapperOptions.markerOptions)
-                    .setLngLat(coords)
-                    .setPopup(popup)
-                    .addTo(map);
+            new mapboxgl.Marker(sheetmapperOptions.markerOptions)
+                .setLngLat(coords)
+                .setPopup(popup)
+                .addTo(map);
 
-                console.log("Added marker:", d.properties.Name, coords);
-                console.log("✅ Added marker:", d.properties.Name, coords);
-            });
-            
+            console.log("Added marker:", d.properties.Name, coords);
+            console.log("✅ Added marker:", d.properties.Name, coords);
+        });
+
     } catch (err) {
         console.error("Error loading map or data:", err);
         console.error("❌ Error loading map or data:", err);
