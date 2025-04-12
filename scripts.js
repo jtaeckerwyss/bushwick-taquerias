@@ -40,8 +40,14 @@ document.addEventListener("DOMContentLoaded", async () => {
             zoom: 14
         });
 
-        // Disable panning
+        // Disable all interactive behaviors
         map.dragPan.disable();
+        map.scrollZoom.disable();
+        map.boxZoom.disable();
+        map.dragRotate.disable();
+        map.keyboard.disable();
+        map.doubleClickZoom.disable();
+        map.touchZoomRotate.disable();
 
         const response = await fetch(sheetmapperOptions.googleSheetDownloadUrl);
         if (!response.ok) {
