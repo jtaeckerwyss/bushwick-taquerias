@@ -32,6 +32,14 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     try {
+        
+        const map = new mapboxgl.Map({
+            container: 'map',
+            style: 'mapbox://styles/mapbox/streets-v12', 
+            center: [-73.918, 40.7], // center over Bushwick 
+            zoom: 13
+        });
+        
         const response = await fetch(sheetmapperOptions.googleSheetDownloadUrl);
         if (!response.ok) {
             throw new Error("Failed to load Google Sheet.");
