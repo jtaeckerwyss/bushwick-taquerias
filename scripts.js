@@ -36,7 +36,7 @@ document.addEventListener("DOMContentLoaded", async () => {
         const map = new mapboxgl.Map({
             container: 'map',
             style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha', // Night-time taco style
-            center: [-73.918, 40.7], // center over Bushwick 
+            center: [-73.918, 40.695], // center over Bushwick 
             zoom: 15
         });
 
