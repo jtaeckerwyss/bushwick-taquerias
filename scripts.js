@@ -35,9 +35,9 @@ document.addEventListener("DOMContentLoaded", async () => {
         
         const map = new mapboxgl.Map({
             container: 'map',
-            style: 'mapbox://styles/mapbox/streets-v12', 
+            style: 'mapbox://styles/jtaeckerwyss/cm9bhhygs006n01qk88qlewha', // Night-time taco style
             center: [-73.918, 40.7], // center over Bushwick 
-            zoom: 13
+            zoom: 14
         });
         
         const response = await fetch(sheetmapperOptions.googleSheetDownloadUrl);
@@ -76,9 +76,8 @@ document.addEventListener("DOMContentLoaded", async () => {
 
                 new mapboxgl.Marker(sheetmapperOptions.markerOptions)
                     .setLngLat(coords)
-                    .setPopup(new mapboxgl.Popup().setHTML(popupContent))
-                    .addTo(map)
-                    .togglePopup();
+                    .setPopup(popup)
+                    .addTo(map);
 
                 console.log("Added marker:", d.properties.Name, coords);
                 console.log("✅ Added marker:", d.properties.Name, coords);
