@@ -75,13 +75,15 @@ document.addEventListener("DOMContentLoaded", async () => {
             }
 
             const popupContent = `
-                       <div class="popup-content">
-                           <div class="popup-title">${d.properties.Name}</div>
-                           <div class="popup-line"><strong>Address:</strong> ${d.properties.Address}</div>
-                           <div class="popup-line"><strong>Description:</strong> ${d.properties.Description}</div>
-                           <div class="popup-line"><strong>What I order:</strong> ${d.properties.Order || ""}</div>
-                       </div>
-                   `;
+            <div class="popup-content">
+                <div class="popup-title">${d.properties.Name}</div>
+                <div class="popup-line"><strong>Address:</strong> ${d.properties.Address}</div>
+                <div class="popup-line"><strong>Description:</strong> ${d.properties.Description}</div>
+                <div class="popup-line"><strong>What I order:</strong> ${d.properties.Order || ""}</div>
+            </div>
+        `;
+
+            const popup = new mapboxgl.Popup({ offset: [15, 0] }).setHTML(popupContent);
 
             new mapboxgl.Marker(sheetmapperOptions.markerOptions)
                 .setLngLat(coords)
